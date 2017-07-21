@@ -6,7 +6,7 @@ public class Joystick : MonoBehaviour
     public TouchDirType touchDirType;
 
     bool isPress = false;
-	bool touchActionActive = false;
+    bool touchActionActive = false;
     float h, v;
     public float bigCircleRadius = 100;
 
@@ -26,23 +26,23 @@ public class Joystick : MonoBehaviour
 
     void Start()
     {
-		
-		#if UNITY_ANDROID || UNITY_IPHONE
-		TouchManager.Instance.onTouchBegan += OnTouchBegan;        
-		#endif
+
+#if UNITY_ANDROID || UNITY_IPHONE
+        TouchManager.Instance.onTouchBegan += OnTouchBegan;
+#endif
 
         bigCircleTrans = transform;
         smallCircleTrans = transform.GetChild(0);
         smallCircleStartLocalPos = smallCircleTrans.localPosition;
     }
 
-	void Destroy()
-	{
-		
-		#if UNITY_ANDROID || UNITY_IPHONE
-		TouchManager.Instance.onTouchBegan -= OnTouchBegan;        
-		#endif
-	}
+    void Destroy()
+    {
+
+#if UNITY_ANDROID || UNITY_IPHONE
+        TouchManager.Instance.onTouchBegan -= OnTouchBegan;
+#endif
+    }
 
     void Update()
     {
@@ -65,14 +65,14 @@ public class Joystick : MonoBehaviour
                 break;
         }
     }
-    
+
     public void OnPointDown()
     {
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
         this.isPress = true;
-        startPressPos = TouchManager.GetTouchPosition(touchDirType);
-		#endif
-		touchActionActive = true;
+        startPressPos = TouchManager.GetPosition(touchDirType);
+#endif
+        touchActionActive = true;
     }
 
     public void OnPointUp()
@@ -80,22 +80,22 @@ public class Joystick : MonoBehaviour
         this.isPress = false;
         smallCircleTrans.localPosition = smallCircleStartLocalPos;
 
-		touchActionActive = false;
+        touchActionActive = false;
         // 鼠标抬起时 将 h,v归零
         h = 0;
         v = 0;
     }
 
-#region 手机端使用
+    #region 手机端使用
     public void OnTouchBegan(TouchDirType dirType)
     {
-		if (dirType != touchDirType || touchActionActive == false )
+        if (dirType != touchDirType || touchActionActive == false)
             return;
 
         isPress = true;
-        startPressPos = TouchManager.GetTouchPosition(touchDirType);
+        startPressPos = TouchManager.GetPosition(touchDirType);
     }
-#endregion
+    #endregion
 
 
     // 按下时 触发此方法
@@ -106,7 +106,7 @@ public class Joystick : MonoBehaviour
         {
             bigCircleStartWorldPos = Camera.main.WorldToScreenPoint(bigCircleTrans.position);
         }
-        Vector2 touchPos = TouchManager.GetTouchPosition(touchDirType) - bigCircleStartWorldPos;
+        Vector2 touchPos = TouchManager.GetPosition(touchDirType) - bigCircleStartWorldPos;
         // 当鼠标拖动的位置与中心位置大于bigCircleRadius时，则固定按钮位置不会超过bigCircleRadius。  bigCircleRadius为背景图片半径长度
         if (Vector2.Distance(touchPos, Vector2.zero) > bigCircleRadius)
         {
